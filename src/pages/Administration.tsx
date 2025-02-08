@@ -1,6 +1,7 @@
-
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import DefaultIncomeManager from "@/components/DefaultIncomeManager";
+import CategoryManager from "@/components/CategoryManager";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -35,24 +36,11 @@ export default function Administration() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <motion.div variants={itemVariants}>
-          <Card className="p-6 glass-card card-hover">
-            <h3 className="text-lg font-semibold text-gray-900">Budget Administration</h3>
-            <p className="mt-2 text-gray-600">Manage household settings</p>
-          </Card>
+          <DefaultIncomeManager />
         </motion.div>
 
         <motion.div variants={itemVariants}>
-          <Card className="p-6 glass-card card-hover">
-            <h3 className="text-lg font-semibold text-gray-900">Default Income</h3>
-            <p className="mt-2 text-gray-600">Set default income values</p>
-          </Card>
-        </motion.div>
-
-        <motion.div variants={itemVariants}>
-          <Card className="p-6 glass-card card-hover">
-            <h3 className="text-lg font-semibold text-gray-900">Categories</h3>
-            <p className="mt-2 text-gray-600">Manage expense categories</p>
-          </Card>
+          <CategoryManager />
         </motion.div>
       </div>
     </motion.div>
