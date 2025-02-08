@@ -1,21 +1,34 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabaseClient";
+
+interface VariableExpense {
+  house_id: string;
+  description: string;
+  category_id: string;
+  amount: number;
+  date: string;
+}
 
 const VariableExpenses = () => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState<number | null>(null);
 
-  const mutation = useMutation(async () => {
-    await supabase.from("variable_expenses").insert({
-      house_id: "your_house_id", // Replace with actual house ID
-      description,
-      category_id: category,
-      amount,
-      date: new Date(),
-    });
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.from("variable_expenses").insert({
+        house_id: "your_house_id", // Replace with actual house ID
+        description,
+        category_id: category,
+        amount,
+        date: new Date().toISOString(),
+      } as VariableExpense);
+      if (error) throw error;
+      return data;
+    }
   });
 
   const handleAdd = () => {
@@ -56,4 +69,4 @@ const VariableExpenses = () => {
   );
 };
 
-export default VariableExpenses; 
+export default VariableExpenses;

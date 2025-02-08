@@ -1,18 +1,30 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabaseClient";
 
+interface CreditCardBill {
+  house_id: string;
+  year: number;
+  month: number;
+  amount: number;
+}
+
 const CreditCardBill = () => {
   const [amount, setAmount] = useState<number | null>(null);
 
-  const mutation = useMutation(async () => {
-    await supabase.from("credit_card_bills").insert({
-      house_id: "your_house_id", // Replace with actual house ID
-      year: new Date().getFullYear(),
-      month: new Date().getMonth() + 1,
-      amount,
-    });
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.from("credit_card_bills").insert({
+        house_id: "your_house_id", // Replace with actual house ID
+        year: new Date().getFullYear(),
+        month: new Date().getMonth() + 1,
+        amount,
+      } as CreditCardBill);
+      if (error) throw error;
+      return data;
+    }
   });
 
   const handleSave = () => {
@@ -36,4 +48,4 @@ const CreditCardBill = () => {
   );
 };
 
-export default CreditCardBill; 
+export default CreditCardBill;

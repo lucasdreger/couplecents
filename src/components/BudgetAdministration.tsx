@@ -1,23 +1,36 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabaseClient";
 
+interface Household {
+  id: string;
+  name: string;
+  share_code: string;
+}
+
 const BudgetAdministration = () => {
   const [householdName, setHouseholdName] = useState("");
   const [householdCode, setHouseholdCode] = useState("");
-  const [households, setHouseholds] = useState([]);
 
-  const { data: householdData } = useQuery("households", async () => {
-    const { data } = await supabase.from("households").select("*");
-    return data;
+  const { data: householdData } = useQuery<Household[]>({
+    queryKey: ["households"],
+    queryFn: async () => {
+      const { data } = await supabase.from("households").select("*");
+      return data as Household[];
+    }
   });
 
-  const mutation = useMutation(async () => {
-    await supabase.from("households").insert({
-      name: householdName,
-      share_code: householdCode,
-    });
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.from("households").insert({
+        name: householdName,
+        share_code: householdCode,
+      });
+      if (error) throw error;
+      return data;
+    }
   });
 
   const handleAddHousehold = () => {
@@ -28,7 +41,6 @@ const BudgetAdministration = () => {
 
   const handleCopyCode = async () => {
     await navigator.clipboard.writeText(householdCode);
-    toast.success('Code copied to clipboard!');
   };
 
   return (
@@ -70,4 +82,4 @@ const BudgetAdministration = () => {
   );
 };
 
-export default BudgetAdministration; 
+export default BudgetAdministration;

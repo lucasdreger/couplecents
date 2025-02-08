@@ -1,20 +1,33 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabaseClient";
 
+interface MonthlyIncome {
+  house_id: string;
+  year: number;
+  month: number;
+  income_amount: number | null;
+  other_income: number | null;
+}
+
 const MonthlyIncome = () => {
   const [income, setIncome] = useState<number | null>(null);
   const [otherIncome, setOtherIncome] = useState<number | null>(null);
 
-  const mutation = useMutation(async () => {
-    await supabase.from("monthly_incomes").upsert({
-      house_id: "your_house_id", // Replace with actual house ID
-      year: new Date().getFullYear(),
-      month: new Date().getMonth() + 1,
-      income_amount: income,
-      other_income: otherIncome,
-    });
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.from("monthly_incomes").upsert({
+        house_id: "your_house_id", // Replace with actual house ID
+        year: new Date().getFullYear(),
+        month: new Date().getMonth() + 1,
+        income_amount: income,
+        other_income: otherIncome,
+      } as MonthlyIncome);
+      if (error) throw error;
+      return data;
+    }
   });
 
   const handleSave = () => {
@@ -45,4 +58,4 @@ const MonthlyIncome = () => {
   );
 };
 
-export default MonthlyIncome; 
+export default MonthlyIncome;
