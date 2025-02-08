@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabaseClient"; // Ensure you have a supabase client setup
+import { supabase } from "@/lib/supabaseClient";
 
 const DefaultIncomeManager = () => {
   const [defaultIncome, setDefaultIncome] = useState<number | null>(null);
