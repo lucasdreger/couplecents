@@ -26,6 +26,11 @@ const BudgetAdministration = () => {
     setHouseholdCode("");
   };
 
+  const handleCopyCode = async () => {
+    await navigator.clipboard.writeText(householdCode);
+    toast.success('Code copied to clipboard!');
+  };
+
   return (
     <Card className="p-6">
       <h3 className="text-lg font-semibold">Budget Administration</h3>
@@ -36,13 +41,21 @@ const BudgetAdministration = () => {
         placeholder="Household Name"
         className="border rounded p-2"
       />
-      <input
-        type="text"
-        value={householdCode}
-        onChange={(e) => setHouseholdCode(e.target.value)}
-        placeholder="Household Code"
-        className="border rounded p-2 ml-2"
-      />
+      <div className="flex items-center">
+        <input
+          type="text"
+          value={householdCode}
+          onChange={(e) => setHouseholdCode(e.target.value)}
+          placeholder="Household Code"
+          className="border rounded p-2 ml-2"
+        />
+        <button 
+          onClick={handleCopyCode}
+          className="p-1 hover:bg-gray-100 rounded"
+        >
+          ⎘
+        </button>
+      </div>
       <button onClick={handleAddHousehold} className="mt-4 bg-blue-500 text-white p-2 rounded">
         Add Household
       </button>
