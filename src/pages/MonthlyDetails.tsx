@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -10,26 +11,31 @@ const MonthlyDetails = () => {
   const [income, setIncome] = useState<number | null>(null);
   const [otherIncome, setOtherIncome] = useState<number | null>(null);
 
-  const { data: monthlyIncomeData } = useQuery(["monthlyIncome", year, month], async () => {
-    const { data } = await supabase
-      .from("monthly_incomes")
-      .select("*")
-      .eq("house_id", "your_house_id") // Replace with actual house ID
-      .eq("year", year)
-      .eq("month", month);
-    return data;
+  const { data: monthlyIncomeData } = useQuery({
+    queryKey: ["monthlyIncome", year, month],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("monthly_incomes")
+        .select("*")
+        .eq("house_id", "your_house_id") // Replace with actual house ID
+        .eq("year", year)
+        .eq("month", month);
+      return data;
+    }
   });
 
-  const mutation = useMutation(async () => {
-    await supabase
-      .from("monthly_incomes")
-      .upsert({
-        house_id: "your_house_id", // Replace with actual house ID
-        year,
-        month,
-        income_amount: income,
-        other_income: otherIncome,
-      });
+  const mutation = useMutation({
+    mutationFn: async () => {
+      await supabase
+        .from("monthly_incomes")
+        .upsert({
+          house_id: "your_house_id", // Replace with actual house ID
+          year,
+          month,
+          income_amount: income,
+          other_income: otherIncome,
+        });
+    }
   });
 
   const handleSave = () => {

@@ -1,18 +1,27 @@
+
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabaseClient";
 
+interface DefaultIncome {
+  income_amount: number;
+  other_income: number;
+}
+
 const DefaultIncomeManager = () => {
   const [defaultIncome, setDefaultIncome] = useState<number | null>(null);
   const [otherIncome, setOtherIncome] = useState<number | null>(null);
 
-  const { data: incomeData } = useQuery("defaultIncome", async () => {
-    const { data } = await supabase
-      .from("default_incomes")
-      .select("*")
-      .eq("house_id", "your_house_id"); // Replace with actual house ID
-    return data;
+  const { data: incomeData } = useQuery<DefaultIncome[]>({
+    queryKey: ["defaultIncome"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("default_incomes")
+        .select("*")
+        .eq("house_id", "your_house_id");
+      return data as DefaultIncome[];
+    }
   });
 
   useEffect(() => {
@@ -22,14 +31,16 @@ const DefaultIncomeManager = () => {
     }
   }, [incomeData]);
 
-  const mutation = useMutation(async () => {
-    await supabase
-      .from("default_incomes")
-      .upsert({
-        house_id: "your_house_id", // Replace with actual house ID
-        income_amount: defaultIncome,
-        other_income: otherIncome,
-      });
+  const mutation = useMutation({
+    mutationFn: async () => {
+      await supabase
+        .from("default_incomes")
+        .upsert({
+          house_id: "your_house_id",
+          income_amount: defaultIncome,
+          other_income: otherIncome,
+        });
+    }
   });
 
   const handleSave = () => {
@@ -66,4 +77,4 @@ const DefaultIncomeManager = () => {
   );
 };
 
-export default DefaultIncomeManager; 
+export default DefaultIncomeManager;

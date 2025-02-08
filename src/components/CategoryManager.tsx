@@ -1,22 +1,34 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabaseClient";
 
+interface Category {
+  id: number;
+  name: string;
+  type: string;
+}
+
 const CategoryManager = () => {
   const [categoryName, setCategoryName] = useState("");
   const [categoryType, setCategoryType] = useState("Expense");
 
-  const { data: categories } = useQuery("categories", async () => {
-    const { data } = await supabase.from("categories").select("*");
-    return data;
+  const { data: categories } = useQuery<Category[]>({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data } = await supabase.from("categories").select("*");
+      return data as Category[];
+    }
   });
 
-  const mutation = useMutation(async () => {
-    await supabase.from("categories").insert({
-      name: categoryName,
-      type: categoryType,
-    });
+  const mutation = useMutation({
+    mutationFn: async () => {
+      await supabase.from("categories").insert({
+        name: categoryName,
+        type: categoryType,
+      });
+    }
   });
 
   const handleAddCategory = () => {
@@ -59,4 +71,4 @@ const CategoryManager = () => {
   );
 };
 
-export default CategoryManager; 
+export default CategoryManager;

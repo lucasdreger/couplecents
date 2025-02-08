@@ -1,21 +1,39 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabaseClient";
 import { Card } from "@/components/ui/card";
 
+interface Income {
+  income_amount: number;
+}
+
+interface Expense {
+  amount: number;
+}
+
 const TotalBudget = () => {
-  const { data: incomes } = useQuery("incomes", async () => {
-    const { data } = await supabase.from("monthly_incomes").select("*");
-    return data;
+  const { data: incomes } = useQuery<Income[]>({
+    queryKey: ["incomes"],
+    queryFn: async () => {
+      const { data } = await supabase.from("monthly_incomes").select("*");
+      return data as Income[];
+    }
   });
 
-  const { data: fixedExpenses } = useQuery("fixedExpenses", async () => {
-    const { data } = await supabase.from("fixed_expenses").select("*");
-    return data;
+  const { data: fixedExpenses } = useQuery<Expense[]>({
+    queryKey: ["fixedExpenses"],
+    queryFn: async () => {
+      const { data } = await supabase.from("fixed_expenses").select("*");
+      return data as Expense[];
+    }
   });
 
-  const { data: variableExpenses } = useQuery("variableExpenses", async () => {
-    const { data } = await supabase.from("variable_expenses").select("*");
-    return data;
+  const { data: variableExpenses } = useQuery<Expense[]>({
+    queryKey: ["variableExpenses"],
+    queryFn: async () => {
+      const { data } = await supabase.from("variable_expenses").select("*");
+      return data as Expense[];
+    }
   });
 
   const totalIncome = incomes?.reduce((acc, curr) => acc + curr.income_amount, 0) || 0;
@@ -32,4 +50,4 @@ const TotalBudget = () => {
   );
 };
 
-export default TotalBudget; 
+export default TotalBudget;
