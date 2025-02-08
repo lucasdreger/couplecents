@@ -9,6 +9,8 @@ interface DefaultIncome {
   other_income: number;
 }
 
+const DEFAULT_HOUSE_ID = "d37ab557-e957-4357-a360-cf1677c2dd5f";
+
 const DefaultIncomeManager = () => {
   const [defaultIncome, setDefaultIncome] = useState<number | null>(null);
   const [otherIncome, setOtherIncome] = useState<number | null>(null);
@@ -19,7 +21,7 @@ const DefaultIncomeManager = () => {
       const { data } = await supabase
         .from("default_incomes")
         .select("*")
-        .eq("house_id", "your_house_id");
+        .eq("house_id", DEFAULT_HOUSE_ID);
       return data as DefaultIncome[];
     }
   });
@@ -36,7 +38,7 @@ const DefaultIncomeManager = () => {
       await supabase
         .from("default_incomes")
         .upsert({
-          house_id: "your_house_id",
+          house_id: DEFAULT_HOUSE_ID,
           income_amount: defaultIncome,
           other_income: otherIncome,
         });

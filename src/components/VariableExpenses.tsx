@@ -12,6 +12,8 @@ interface VariableExpense {
   date: string;
 }
 
+const DEFAULT_HOUSE_ID = "d37ab557-e957-4357-a360-cf1677c2dd5f";
+
 const VariableExpenses = () => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -20,7 +22,7 @@ const VariableExpenses = () => {
   const mutation = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabase.from("variable_expenses").insert({
-        house_id: "your_house_id", // Replace with actual house ID
+        house_id: DEFAULT_HOUSE_ID,
         description,
         category_id: category,
         amount,

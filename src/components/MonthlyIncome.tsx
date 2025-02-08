@@ -12,6 +12,8 @@ interface MonthlyIncome {
   other_income: number | null;
 }
 
+const DEFAULT_HOUSE_ID = "d37ab557-e957-4357-a360-cf1677c2dd5f";
+
 const MonthlyIncome = () => {
   const [income, setIncome] = useState<number | null>(null);
   const [otherIncome, setOtherIncome] = useState<number | null>(null);
@@ -19,7 +21,7 @@ const MonthlyIncome = () => {
   const mutation = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabase.from("monthly_incomes").upsert({
-        house_id: "your_house_id", // Replace with actual house ID
+        house_id: DEFAULT_HOUSE_ID,
         year: new Date().getFullYear(),
         month: new Date().getMonth() + 1,
         income_amount: income,

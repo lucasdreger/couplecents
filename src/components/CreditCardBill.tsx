@@ -11,13 +11,15 @@ interface CreditCardBill {
   amount: number;
 }
 
+const DEFAULT_HOUSE_ID = "d37ab557-e957-4357-a360-cf1677c2dd5f";
+
 const CreditCardBill = () => {
   const [amount, setAmount] = useState<number | null>(null);
 
   const mutation = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabase.from("credit_card_bills").insert({
-        house_id: "your_house_id", // Replace with actual house ID
+        house_id: DEFAULT_HOUSE_ID,
         year: new Date().getFullYear(),
         month: new Date().getMonth() + 1,
         amount,
