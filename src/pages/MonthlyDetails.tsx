@@ -5,6 +5,8 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabaseClient";
 
+const DEFAULT_HOUSE_ID = "d37ab557-e957-4357-a360-cf1677c2dd5f";
+
 const MonthlyDetails = () => {
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
@@ -17,7 +19,7 @@ const MonthlyDetails = () => {
       const { data } = await supabase
         .from("monthly_incomes")
         .select("*")
-        .eq("house_id", "your_house_id") // Replace with actual house ID
+        .eq("house_id", DEFAULT_HOUSE_ID)
         .eq("year", year)
         .eq("month", month);
       return data;
@@ -29,7 +31,7 @@ const MonthlyDetails = () => {
       await supabase
         .from("monthly_incomes")
         .upsert({
-          house_id: "your_house_id", // Replace with actual house ID
+          house_id: DEFAULT_HOUSE_ID,
           year,
           month,
           income_amount: income,
